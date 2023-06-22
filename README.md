@@ -2,7 +2,7 @@
 
 This is a simple tool that can push any text message to your Telegram.
 
-## Useage (Official instance)
+## Usage (Official instance)
 
 1. Play with [the bot](https://t.me/neko_push_bot) to get chat ID. 
 2. Use the api to push messages!
@@ -21,9 +21,9 @@ The official API endpoint is at [https://push.meowbot.page/push](https://push.me
 | text |   True   | String | Text message you wish to push |
 | html |   False  | Boolean | Enable [Telegram HTML formatting](https://core.telegram.org/bots/api#html-style) |
 
-The response will be a `ok` if your message is pushed without problem.
+The response will be `ok` if your message is pushed without problem.
 The response will be `Bad request` if some required params are missing.
-Otherwise the response will be error message.
+Otherwise the response will be the error message.
 
 For example:
 
@@ -63,7 +63,7 @@ Message **Hello** *world* will be pushed to chatid `12345`, with one button `Ope
 
 ## Deploying your own
 
-You can alse deploy your own bot and push service.
+You can also deploy your own bot and push service.
 
 ### Creating a bot
 
@@ -86,7 +86,7 @@ At last run `yarn deploy` to deploy the worker.
 
 You will need to setup a webhook for your bot to react with your command.
 
-**Before going on, it is adviced to set a custom domain for your worker. Using the default domain may encounter SSL error when telegram try to push updates to your worker. You can do it on cloudflare dashboard.**
+**Before going on, it is strongly recommended to set a custom domain for your worker. Using the default domain may encounter SSL error when telegram try to push updates to your worker. You can do it on cloudflare dashboard.**
 
 Now open https://your.worker.domain.example/setup?ADMIN_SECRET . Replace your.worker.domain.example with your domain and `ADMIN_SECRET` with the one you previously set.
 If everything goes fine, you will see something like `SetCommands  SetWebhook at https://your.worker.domain.example/telegram Webhook was set`.

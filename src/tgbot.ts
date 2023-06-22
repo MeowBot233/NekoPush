@@ -43,13 +43,12 @@ export default class {
     }
 
     public async setWebhook(): Promise<string> {
-        // await this.deleteWebhook();
         const body = {
             url: this.webhook,
             max_connections: 1,
             drop_pending_updates: true
         }
-        return (await this.request(body, 'setWebhook')).description || '';
+        return (await this.request(body, 'setWebhook')).description || 'ok';
     }
 
     public async deleteWebhook(): Promise<boolean> {
@@ -64,18 +63,18 @@ export default class {
             commands: [
                 {
                     command: 'chat_id',
-                    description: '获取对话ID'
+                    description: 'Get Chat ID'
                 }
             ]
         }
-        return (await this.request(body, 'setMyCommands')).description || '';
+        return (await this.request(body, 'setMyCommands')).description || 'ok';
         
     }
 
     public async sendMessage(target: number, text: string, html: boolean = false, buttons?: Button[][]): Promise<TgResponse<Message>> {
         const body = {
             chat_id: target,
-            text: text,
+            text,
             parse_mode: html? 'HTML' : undefined,
             reply_markup: {
                 inline_keyboard: buttons
@@ -83,6 +82,21 @@ export default class {
         }
         return await this.request<Message>(body, 'sendMessage');
     }
+
+    public async sendFile(target: number,type: string, file: string, caption?: string, html: boolean = false, buttons?: Button[][]): Promise<TgResponse<Message>> {
+        let body: any = {
+            chat_id: target,
+            caption,
+            parse_mode: html? 'HTML' : undefined,
+            reply_markup: {
+                inline_keyboard: buttons
+            }
+        }
+        body[type] = file;
+        const method = 'send' + type[0] + type.slice(1);
+        return await this.request<Message>(body, method);
+    }
+
 }
 
 interface TgResponse<T> {

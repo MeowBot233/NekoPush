@@ -1,5 +1,5 @@
 import { Env } from "../worker";
-import TgBot from '../tgbot'
+import TgBot, { TgResponse, Message } from '../tgbot'
 export default async function (request: Request, env: Env, ctx: ExecutionContext, bot: TgBot): Promise<Response> {
     const bad = new Response('Bad request', { status: 400 });
     if(request.method == 'GET') {
@@ -18,7 +18,11 @@ export default async function (request: Request, env: Env, ctx: ExecutionContext
             new Response('Unsupported Content-Type:' + request.headers.get('Content-Type'), { status: 415 });
         try {
             const pushBody = await request.json<Push>();
-            const res = await bot.sendMessage(pushBody.id, pushBody.text, pushBody.html, pushBody.buttons);
+            if(!pushBody.text && !pushBody.type) return bad;
+            if(!(pushBody.type && pushBody.file)) return bad;
+            let res: TgResponse<Message>;
+            if(pushBody.type) res = await bot.sendFile(pushBody.id, pushBody.type, pushBody.file!, pushBody.text, pushBody.html, pushBody.buttons);
+            else res = await bot.sendMessage(pushBody.id, pushBody.text!, pushBody.html, pushBody.buttons);
             if(res.ok)
                 return new Response('ok');
             return new Response(res.description, { status: 400 });
@@ -31,9 +35,11 @@ export default async function (request: Request, env: Env, ctx: ExecutionContext
 
 interface Push {
     id: number;
-    text: string;
+    text?: string;
     html?: boolean;
-    buttons?: Button[][]
+    type?: string;
+    file?: string;
+    buttons?: Button[][];
 }
 
 interface Button {

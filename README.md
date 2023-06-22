@@ -37,11 +37,23 @@ All PUSH requests must set `Content-Type` to `application/json` in their headers
 | Name | Required | Type | Description |
 | ---- | -------- | ---- | ----------- |
 |  id  |   True   | Number | ChatID you get from the bot |
-| text |   True   | String | Text message you wish to push |
+| text |   False* | String | Text message you wish to push, or caption of the file. |
+| type |   False* | String | Type of the file you wish to send. |
+| file |   False* | String | URL of the file you wish to send. |
 | html |   False  | Boolean | Enable [Telegram HTML formatting](https://core.telegram.org/bots/api#html-style) |
 | buttons | False | InlineKeyboardButton[][] | See [Telegram docs](https://core.telegram.org/bots/api#inlinekeyboardmarkup) |
 
-*Currently only url buttons have actual effect.*
+***If you want to send a file, `file` and `type` fields are required, `text` field is optional and will be the caption if set. Otherwise `text` field is required.**
+
+`type` can be one of these:
+- `photo`
+- `audio`
+- `document`
+- `video`
+- `animation`
+- `voice`
+
+*Currently `callback_data` buttons don't have any effect.*
 
 For example:
 
@@ -89,7 +101,7 @@ You will need to setup a webhook for your bot to react with your command.
 **Before going on, it is strongly recommended to set a custom domain for your worker. Using the default domain may encounter SSL error when telegram try to push updates to your worker. You can do it on cloudflare dashboard.**
 
 Now open https://your.worker.domain.example/setup?ADMIN_SECRET . Replace your.worker.domain.example with your domain and `ADMIN_SECRET` with the one you previously set.
-If everything goes fine, you will see something like `SetCommands  SetWebhook at https://your.worker.domain.example/telegram Webhook was set`.
+If everything goes fine, you will see something like `SetCommands ok SetWebhook at https://your.worker.domain.example/telegram Webhook was set`.
 
 ### Deleting webhook
 

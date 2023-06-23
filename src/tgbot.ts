@@ -36,10 +36,12 @@ export default class {
         })
     }
 
-    private async request<T>(body: Object, method: string): Promise<TgResponse<T>> {
-        console.log(JSON.stringify(body));
-        const res = await fetch(this.basePath + method, this.buildRequest(body));
-        return await readResponse(res);
+    public async sendRequest<T>(body: Object, method: string): Promise<TgResponse<T>> {
+        return await readResponse<T>(await this.request(body, method));
+    }
+
+    public async request(body: Object, method: string): Promise<Response> {
+        return await fetch(this.basePath + method, this.buildRequest(body));
     }
 
     public async setWebhook(): Promise<string> {
@@ -48,14 +50,14 @@ export default class {
             max_connections: 1,
             drop_pending_updates: true
         }
-        return (await this.request(body, 'setWebhook')).description || 'ok';
+        return (await this.sendRequest(body, 'setWebhook')).description || 'ok';
     }
 
     public async deleteWebhook(): Promise<boolean> {
         const body = { 
             drop_pending_updates: true 
         }
-        return (await this.request(body, 'deleteWebhook')).ok;
+        return (await this.sendRequest(body, 'deleteWebhook')).ok;
     }
 
     public async setMyCommands(): Promise<string> {
@@ -67,7 +69,7 @@ export default class {
                 }
             ]
         }
-        return (await this.request(body, 'setMyCommands')).description || 'ok';
+        return (await this.sendRequest(body, 'setMyCommands')).description || 'ok';
         
     }
 
@@ -80,7 +82,7 @@ export default class {
                 inline_keyboard: buttons
             }
         }
-        return await this.request<Message>(body, 'sendMessage');
+        return await this.sendRequest<Message>(body, 'sendMessage');
     }
 
     public async sendFile(target: number,type: string, file: string, caption?: string, html: boolean = false, buttons?: Button[][]): Promise<TgResponse<Message>> {
@@ -94,7 +96,7 @@ export default class {
         }
         body[type] = file;
         const method = 'send' + type[0] + type.slice(1);
-        return await this.request<Message>(body, method);
+        return await this.sendRequest<Message>(body, method);
     }
 
 }

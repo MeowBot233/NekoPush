@@ -1,5 +1,8 @@
 import { Env } from "../worker";
 import TgBot, { TgResponse, Message } from '../tgbot'
+const headers = new Headers({
+    "Content-Type": "application/json",
+})
 export default async function (request: Request, env: Env, ctx: ExecutionContext, bot: TgBot): Promise<Response> {
     if(request.method == 'GET') {
         const url = new URL(request.url);
@@ -15,22 +18,36 @@ export default async function (request: Request, env: Env, ctx: ExecutionContext
     if(request.method == 'POST') {
         if(request.headers.get('Content-Type') != 'application/json')
             new Response('Unsupported Content-Type:' + request.headers.get('Content-Type'), { status: 415 });
-        try {
-            const pushBody = await request.json<Push>();
-            if(!pushBody.id) return bad('Missing id')
-            if(!pushBody.text && !pushBody.type) return bad('Missing content');
-            if(!(pushBody.type && pushBody.file)) return bad('Missing type or file');
-            let res: TgResponse<Message>;
-            if(pushBody.type) res = await bot.sendFile(pushBody.id, pushBody.type, pushBody.file!, pushBody.text, pushBody.html, pushBody.buttons);
-            else res = await bot.sendMessage(pushBody.id, pushBody.text!, pushBody.html, pushBody.buttons);
-            if(res.ok)
-                return new Response('ok');
-            return new Response(res.description, { status: 400 });
-        } catch (error) {
-            return bad(JSON.stringify(error));
+        const body = await request.json<Push>();
+        const version = body.version || 1;
+        switch (version) {
+            case 1: return await pushV1(body as PushV1, bot);
+            case 2: return await pushV2(body as PushV2, bot);
+            default: return bad('Push API version ' + version + ' is not supported!')
         }
+
     }
     return new Response('Method Not Allowed', { status: 405 })
+}
+
+async function pushV1(body: PushV1, bot: TgBot): Promise<Response> {
+    console.log('pushV1');
+    try {
+        if(!body.id) return bad('Missing id')
+        if(!body.text) return bad('Missing text');
+        const res = await bot.sendMessage(body.id, body.text, body.html, body.buttons);
+        if(res.ok) return new Response(JSON.stringify(res.result), { headers });
+        else return bad(res.description!);
+    } catch (error) {
+        console.log(error);
+        return bad(JSON.stringify(error));
+    }
+}
+
+async function pushV2(body: PushV2, bot: TgBot): Promise<Response> {
+    if(!body.method) return bad('Missing method');
+    if(!body.params) return bad('Missing params');
+    return await bot.request(body.params, body.method);
 }
 
 function bad(error: string): Response {
@@ -38,12 +55,19 @@ function bad(error: string): Response {
 }
 
 interface Push {
+    version?: number;
+}
+
+interface PushV1 extends Push {
     id: number;
-    text?: string;
+    text: string;
     html?: boolean;
-    type?: string;
-    file?: string;
     buttons?: Button[][];
+}
+
+interface PushV2 extends Push {
+    method: string
+    params: Object
 }
 
 interface Button {

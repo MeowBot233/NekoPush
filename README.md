@@ -13,7 +13,11 @@ This is a simple tool that can push any text message to your Telegram.
 
 The official API endpoint is at [https://push.meowbot.page/push](https://push.meowbot.page/push). You can use GET or POST method to interact with the API.
 
-### GET method
+### Push API v1
+
+This is the simpler way to use the push api.
+
+#### GET method
 
 | Name | Required | Type | Description |
 | ---- | -------- | ---- | ----------- |
@@ -29,7 +33,7 @@ For example:
 
 Make a get request to `https://push.meowbot.page/push?id=12345&text=Hello` will result in message `Hello` being pushed to chatid `12345` (if the chatid exists)
 
-### PUSH method
+#### PUSH method
 
 Params in PUSH method are in JSON form.
 All PUSH requests must set `Content-Type` to `application/json` in their headers.
@@ -37,21 +41,10 @@ All PUSH requests must set `Content-Type` to `application/json` in their headers
 | Name | Required | Type | Description |
 | ---- | -------- | ---- | ----------- |
 |  id  |   True   | Number | ChatID you get from the bot |
-| text |   False* | String | Text message you wish to push, or caption of the file. |
-| type |   False* | String | Type of the file you wish to send. |
-| file |   False* | String | URL of the file you wish to send. |
-| html |   False  | Boolean | Enable [Telegram HTML formatting](https://core.telegram.org/bots/api#html-style) |
-| buttons | False | InlineKeyboardButton[][] | See [Telegram docs](https://core.telegram.org/bots/api#inlinekeyboardmarkup) |
-
-***If you want to send a file, `file` and `type` fields are required, `text` field is optional and will be the caption if set. Otherwise `text` field is required.**
-
-`type` can be one of these:
-- `photo`
-- `audio`
-- `document`
-- `video`
-- `animation`
-- `voice`
+| text |   True | String | Text message you wish to push, or caption of the file. |
+| html |   False  | Boolean | Enable [Telegram HTML formatting](https://core.telegram.org/bots/api#html-style). |
+| buttons | False | InlineKeyboardButton[][] | See [Telegram docs](https://core.telegram.org/bots/api#inlinekeyboardmarkup). |
+| version | False | Number | This field must be `1` when using push API v1. |
 
 *Currently `callback_data` buttons don't have any effect.*
 
@@ -72,6 +65,22 @@ For example:
 Message **Hello** *world* will be pushed to chatid `12345`, with one button `Open URL` below it. 
 
 ![Alt text](image.png)
+
+### Push API v2
+
+The push API v2 provides rich content types support. 
+It allows you to directly use some of telegram's API methods. You can read telegram's documents [here](https://core.telegram.org/bots/api#available-methods).
+Currently only methods starting with `send` are allowed.
+
+Push API v2 only support `POST` method.
+All PUSH requests must set `Content-Type` to `application/json` in their headers.
+
+| Name | Required | Type | Description |
+| ---- | -------- | ---- | ----------- |
+| version | True  | Number | This field must be `2`. |
+| method  | True  | String | The telegram method you wish to use. Must start with `send`. |
+| params  | True  | Object | The request params. |
+
 
 ## Deploying your own
 

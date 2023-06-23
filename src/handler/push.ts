@@ -47,6 +47,7 @@ async function pushV1(body: PushV1, bot: TgBot): Promise<Response> {
 async function pushV2(body: PushV2, bot: TgBot): Promise<Response> {
     if(!body.method) return bad('Missing method');
     if(!body.params) return bad('Missing params');
+    if(!body.method.startsWith('send')) return bad('Method ' + body.method + ' is not allowed');
     return await bot.request(body.params, body.method);
 }
 

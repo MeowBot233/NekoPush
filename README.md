@@ -19,7 +19,7 @@ This is the simpler way to use the push api.
 
 | Name | Required | Type | Description |
 | ---- | -------- | ---- | ----------- |
-| token |   True   | Number | The token you get from the bot |
+| token |   True   | String | The token you get from the bot |
 | text |   True   | String | Text message you wish to push |
 | html |   False  | Boolean | Enable [Telegram HTML formatting](https://core.telegram.org/bots/api#html-style) |
 
@@ -29,7 +29,7 @@ Otherwise the response will be the error message.
 
 For example:
 
-Make a get request to `https://push.meowbot.page/push?id=12345&text=Hello` will result in message `Hello` being pushed to chatid `12345` (if the chatid exists)
+Make a get request to `https://push.meowbot.page/push?token=12345&text=Hello` will result in message `Hello` being pushed to chatid `12345` (if the chatid exists)
 
 #### PUSH method
 
@@ -75,7 +75,7 @@ All PUSH requests must set `Content-Type` to `application/json` in their headers
 
 | Name | Required | Type | Description |
 | ---- | -------- | ---- | ----------- |
-| token |   True   | Number | The token you get from the bot |
+| token |   True   | String | The token you get from the bot |
 | version | True  | Number | This field must be `2`. |
 | method  | True  | String | The telegram method you wish to use. Must start with `send`. |
 | params  | True  | Object | The request params. |

@@ -4,10 +4,8 @@ This is a simple tool that can push any text message to your Telegram.
 
 ## Usage (Official instance)
 
-1. Play with [the bot](https://t.me/neko_push_bot) to get chat ID. 
+1. Play with [the bot](https://t.me/neko_push_bot) to get a token. 
 2. Use the api to push messages!
-
-**You must use the bot (/start) at least once to get your messages pushed.**
 
 ## API
 
@@ -21,7 +19,7 @@ This is the simpler way to use the push api.
 
 | Name | Required | Type | Description |
 | ---- | -------- | ---- | ----------- |
-|  id  |   True   | Number | ChatID you get from the bot |
+| token |   True   | Number | The token you get from the bot |
 | text |   True   | String | Text message you wish to push |
 | html |   False  | Boolean | Enable [Telegram HTML formatting](https://core.telegram.org/bots/api#html-style) |
 
@@ -40,7 +38,7 @@ All PUSH requests must set `Content-Type` to `application/json` in their headers
 
 | Name | Required | Type | Description |
 | ---- | -------- | ---- | ----------- |
-|  id  |   True   | Number | ChatID you get from the bot |
+| token |   True   | Number | The token you get from the bot |
 | text |   True | String | Text message you wish to push, or caption of the file. |
 | html |   False  | Boolean | Enable [Telegram HTML formatting](https://core.telegram.org/bots/api#html-style). |
 | buttons | False | InlineKeyboardButton[][] | See [Telegram docs](https://core.telegram.org/bots/api#inlinekeyboardmarkup). |
@@ -52,7 +50,7 @@ For example:
 
 ```JSON
 {
-    "id": 12345,
+    "token": 12345,
     "text": "<b>Hello</b> <i>world</i>",
     "html": true,
     "buttons": [[{
@@ -62,7 +60,7 @@ For example:
 }
 ```
 
-Message **Hello** *world* will be pushed to chatid `12345`, with one button `Open URL` below it. 
+Message **Hello** *world* will be pushed to token `12345`, with one button `Open URL` below it. 
 
 ![Alt text](image.png)
 
@@ -77,10 +75,12 @@ All PUSH requests must set `Content-Type` to `application/json` in their headers
 
 | Name | Required | Type | Description |
 | ---- | -------- | ---- | ----------- |
+| token |   True   | Number | The token you get from the bot |
 | version | True  | Number | This field must be `2`. |
 | method  | True  | String | The telegram method you wish to use. Must start with `send`. |
 | params  | True  | Object | The request params. |
 
+*`chat_id` field in `params` will be replaced by real chat_id got from token. You can safely remove `chat_id` in `params`.*
 
 ## Deploying your own
 

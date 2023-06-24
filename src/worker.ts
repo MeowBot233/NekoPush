@@ -15,10 +15,10 @@ import unsetup from './handler/unsetup';
 
 export interface Env {
     BOT_TOKEN: string;
-    API_ADDRESS: string | undefined;
+    API_ADDRESS?: string;
     ADMIN_SECRET: string
     // Example binding to KV. Learn more at https://developers.cloudflare.com/workers/runtime-apis/kv/
-    // MY_KV_NAMESPACE: KVNamespace;
+    NekoPush: KVNamespace;
     //
     // Example binding to Durable Object. Learn more at https://developers.cloudflare.com/workers/runtime-apis/durable-objects/
     // MY_DURABLE_OBJECT: DurableObjectNamespace;

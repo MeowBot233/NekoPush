@@ -1,4 +1,6 @@
 import type { Button } from "./handler/push";
+import i18n from "./i18n";
+import type { lang } from "./i18n";
 
 async function readResponse<T>(res: Response): Promise<TgResponse<T>> {
     return res.json<TgResponse<T>>();
@@ -19,9 +21,6 @@ export default class {
     })
     
     public buildRequest(body: Object): RequestInit {
-        this.headers.forEach((v, k) => {
-            console.log([k, v].join(': '));
-        })
         return {
             method: 'post',
             headers: this.headers,
@@ -41,6 +40,7 @@ export default class {
     }
 
     public async request(body: Object, method: string): Promise<Response> {
+        console.log(JSON.stringify(body));
         return await fetch(this.basePath + method, this.buildRequest(body));
     }
 
@@ -60,17 +60,36 @@ export default class {
         return (await this.sendRequest(body, 'deleteWebhook')).ok;
     }
 
-    public async setMyCommands(): Promise<string> {
-        const body = { 
+    public async setCommands(): Promise<string> {
+        const strs: string[] = [];
+        for(const [key, lang] of i18n) {
+            strs.push('Setting commands for language ' + key);
+            const res = await this.setMyCommands(lang, key);
+            strs.push(res.description || 'ok');
+            strs.push('\n');
+        }
+        return strs.join('');
+    }
+
+    public async setMyCommands(lang: lang, key: string): Promise<TgResponse<boolean>> {
+        const body = {
             commands: [
                 {
-                    command: 'chat_id',
-                    description: 'Get Chat ID'
+                    command: 'get_token',
+                    description: lang.get_token_description
+                },
+                {
+                    command: 'reset_token',
+                    description: lang.refresh_token_description
+                },
+                {
+                    command: 'privacy',
+                    description: lang.privacy_description
                 }
-            ]
+            ],
+            language_code: key
         }
-        return (await this.sendRequest(body, 'setMyCommands')).description || 'ok';
-        
+        return await this.sendRequest<boolean>(body, 'setMyCommands');
     }
 
     public async sendMessage(target: number, text: string, html: boolean = false, buttons?: Button[][]): Promise<TgResponse<Message>> {

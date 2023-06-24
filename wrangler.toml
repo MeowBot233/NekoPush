@@ -9,9 +9,9 @@ compatibility_date = "2023-06-21"
 
 # Bind a KV Namespace. Use KV as persistent storage for small key-value pairs.
 # Docs: https://developers.cloudflare.com/workers/runtime-apis/kv
-# [[kv_namespaces]]
-# binding = "MY_KV_NAMESPACE"
-# id = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+[[kv_namespaces]]
+binding = "NekoPush"
+id = "59d0333553d1468291a3fba6636cb23b"
 
 # Bind an R2 Bucket. Use R2 to store arbitrarily large blobs of data, such as files.
 # Docs: https://developers.cloudflare.com/r2/api/workers/workers-api-usage/
@@ -52,5 +52,14 @@ compatibility_date = "2023-06-21"
 [env.test]
 name = "push_agent-test"
 
+[[env.test.kv_namespaces]]
+binding = "NekoPush"
+id = "59d0333553d1468291a3fba6636cb23b"
+
 [env.local.vars]
 API_ADDRESS = "https://tg.meowbot.page/"
+
+[[env.local.kv_namespaces]]
+binding = "NekoPush"
+id = "59d0333553d1468291a3fba6636cb23b"
+preview_id = "b9c45d6fa17442be9a33b135c13ec112"

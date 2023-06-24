@@ -1,6 +1,7 @@
 import { Env } from "../worker";
-import TgBot from '../tgbot'
-import type { Update, Message } from '../tgbot'
+import TgBot from '../tgbot';
+import type { Update, Message } from '../tgbot';
+
 export default async function (request: Request, env: Env, ctx: ExecutionContext, bot: TgBot): Promise<Response> {
     if(request.method != 'POST') return new Response(null, { status: 405 });
     const update: Update = await request.json<Update>();
@@ -15,7 +16,10 @@ export default async function (request: Request, env: Env, ctx: ExecutionContext
 }
 
 const handlerMap = new Map<string, commandHandler>([
-    ['/chat_id', chat_id]
+    // ['/chat_id', chat_id],
+    ['/get_token', get_token],
+    ['/reset_token', reset_token],
+    ['/privacy', privacy]
 ])
 
 type commandHandler = (message: Message, env: Env, ctx: ExecutionContext, bot: TgBot) => Promise<Response>
@@ -27,8 +31,26 @@ async function chat_id(message: Message, env: Env, ctx: ExecutionContext, bot: T
         reply_to_message_id: message.message_id,
         text: message.chat.id
     }
-    console.log(JSON.stringify(body));
     return bot.buildResponse(body)
+}
+
+async function get_token(message: Message, env: Env, ctx: ExecutionContext, bot: TgBot): Promise<Response> {
+    const token = await env.NekoPush.get(message.chat.id.toString());
+    if(token === null) return reset_token(message, env, ctx, bot);
+    return buildReply(bot, message, ['<code>', token, '</code>'].join(''), true);
+}
+
+async function reset_token(message: Message, env: Env, ctx: ExecutionContext, bot: TgBot): Promise<Response> {
+    const token = await env.NekoPush.get(message.chat.id.toString());
+    if(token !== null) env.NekoPush.delete(message.chat.id.toString());
+    const newToken = generateRandomToken(32);
+    env.NekoPush.put(message.chat.id.toString(), newToken);
+    env.NekoPush.put(newToken, message.chat.id.toString());
+    return buildReply(bot, message, ['<code>', newToken, '</code>'].join(''), true)
+}
+
+async function privacy(message: Message, env: Env, ctx: ExecutionContext, bot: TgBot): Promise<Response> {
+    return buildReply(bot, message, 'TODO')
 }
 
 async function commandNotFound(message: Message, env: Env, ctx: ExecutionContext, bot: TgBot): Promise<Response> {
@@ -40,4 +62,28 @@ function getCommand(msg: string): string | null {
     const i = msg.indexOf('@');
     if(i == -1) return msg;
     return msg.substring(0, i);
+}
+
+function generateRandomToken(length: number): string {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    const tokenArray = [];
+  
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      tokenArray.push(characters[randomIndex]);
+    }
+  
+    return tokenArray.join('');
+}
+
+
+function buildReply(bot:TgBot, message: Message, text: string, html?: boolean): Response {
+    const body = {
+        method: 'sendMessage',
+        chat_id: message.chat.id,
+        reply_to_message_id: message.message_id,
+        text: text,
+        parse_mode: html? 'HTML' : undefined
+    }
+    return bot.buildResponse(body);
 }

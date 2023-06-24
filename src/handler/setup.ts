@@ -5,14 +5,15 @@ export default async function (request: Request, env: Env, ctx: ExecutionContext
     if(url.search != "?" + env.ADMIN_SECRET) {
         return new Response(null, { status: 400 })
     }
-    const setCommandsResult = await bot.setMyCommands();
+    const setCommandsResult = await bot.setCommands();
     const setWebhookResult = await bot.setWebhook();
     const res = [
-        'SetCommands',
+        'SetCommands:\n',
         setCommandsResult,
-        'SetWebhook at',
+        'SetWebhook at ',
         bot.webhook,
+        '\n',
         setWebhookResult
-    ].join(' ');
+    ].join('');
     return new Response(res);
 }

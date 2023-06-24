@@ -101,6 +101,16 @@ Then you need to create to secrets: `BOT_TOKEN` and `ADMIN_SECRET`.
 
 Run `npx wrangler secret put ADMIN_SECRET` and set your `ADMIN_SECRET`.
 Run `npx wrangler secret put BOT_TOKEN` and set your `BOT_TOKEN`.
+
+Run `wrangler kv:namespace create NekoPush` and remember the `id`. You can also get the `id` on cloudflare dashboard.
+Edit `wrangler.toml`. Under `[[kv_namespaces]]` change `id` to your id.
+
+```toml
+[[kv_namespaces]]
+binding = "NekoPush"
+id = "Your ID here"
+```
+
 At last run `yarn deploy` to deploy the worker.
 
 ### Setting up webhook

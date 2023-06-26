@@ -23,6 +23,7 @@ This is the simpler way to use the push api.
 | ---- | -------- | ---- | ----------- |
 | token |   True   | String | The token you get from the bot |
 | text |   True   | String | Text message you wish to push |
+|thread_id| False | Number | Thread ID when in a group that enabled `topic` mode. |
 | html |   False  | Boolean | Enable [Telegram HTML formatting](https://core.telegram.org/bots/api#html-style) |
 
 The response will be `ok` if your message is pushed without problem.
@@ -42,6 +43,7 @@ All PUSH requests must set `Content-Type` to `application/json` in their headers
 | ---- | -------- | ---- | ----------- |
 | token |   True   | Number | The token you get from the bot |
 | text |   True | String | Text message you wish to push, or caption of the file. |
+|thread_id| False | Number | Thread ID when in a group that enabled `topic` mode. |
 | html |   False  | Boolean | Enable [Telegram HTML formatting](https://core.telegram.org/bots/api#html-style). |
 | buttons | False | InlineKeyboardButton[][] | See [Telegram docs](https://core.telegram.org/bots/api#inlinekeyboardmarkup). |
 | version | False | Number | This field must be `1` when using push API v1. |

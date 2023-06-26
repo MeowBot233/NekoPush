@@ -10,10 +10,11 @@ export default async function (request: Request, env: Env, ctx: ExecutionContext
         const token = params.get('token')
         const text = params.get('text');
         const html = Boolean(params.get('html'));
+        const thread_id = Number(params.get('thread_id'));
         if(!token || !text) return bad('Missing token or text');
         const targetID = await getID(token, env);
         if(!targetID) return bad('Token not found');
-        const res = await bot.sendMessage(targetID, text, html);
+        const res = await bot.sendMessage(targetID, text, html, thread_id);
         if(res.ok) return new Response(JSON.stringify(res.ok));
         return new Response(res.description, { status: 400 });
     }
@@ -39,7 +40,7 @@ async function pushV1(body: PushV1, env: Env, bot: TgBot): Promise<Response> {
         if(!body.text) return bad('Missing text');
         const id = await getID(body.token, env);
         if(!id) return bad('Token not found');
-        const res = await bot.sendMessage(id, body.text, body.html, body.buttons);
+        const res = await bot.sendMessage(id, body.text, body.html, body.thread_id, body.buttons);
         if(res.ok) return new Response(JSON.stringify(res.result), { headers });
         else return bad(res.description!);
     } catch (error) {
@@ -76,6 +77,7 @@ interface Push {
 interface PushV1 extends Push {
     token: string;
     text: string;
+    thread_id?: number;
     html?: boolean;
     buttons?: Button[][];
 }

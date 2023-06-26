@@ -64,14 +64,17 @@ export default class {
         const strs: string[] = [];
         for(const [key, lang] of i18n) {
             strs.push('Setting commands for language ' + key);
-            const res = await this.setMyCommands(lang, key);
-            strs.push(res.description || 'ok');
+            strs.push(' ');
+            const privateCommandsRes = await this.setPrivateCommands(lang, key);
+            strs.push('private commands: ' + (privateCommandsRes.description || 'ok '));
+            const groupCommandsRes = await this.setGroupCommands(lang, key);
+            strs.push('group commands: ' + (groupCommandsRes.description || 'ok '));
             strs.push('\n');
         }
         return strs.join('');
     }
 
-    public async setMyCommands(lang: lang, key: string): Promise<TgResponse<boolean>> {
+    public async setPrivateCommands(lang: lang, key: string): Promise<TgResponse<boolean>> {
         const body = {
             commands: [
                 {
@@ -87,16 +90,44 @@ export default class {
                     description: lang.privacy_description
                 }
             ],
+            scope: {
+                type: 'all_private_chats'
+            },
             language_code: key
         }
         return await this.sendRequest<boolean>(body, 'setMyCommands');
     }
 
-    public async sendMessage(target: number, text: string, html: boolean = false, buttons?: Button[][]): Promise<TgResponse<Message>> {
+    public async setGroupCommands(lang: lang, key: string): Promise<TgResponse<boolean>> {
+        const body = {
+            commands: [
+                {
+                    command: 'get_token',
+                    description: lang.get_token_description
+                },
+                {
+                    command: 'reset_token',
+                    description: lang.refresh_token_description
+                },
+                {
+                    command: 'get_thread_id',
+                    description: lang.get_thread_id_description
+                }
+            ],
+            scope: {
+                type: 'all_chat_administrators'
+            },
+            language_code: key
+        }
+        return await this.sendRequest<boolean>(body, 'setMyCommands');
+    }
+
+    public async sendMessage(target: number, text: string, html: boolean = false, thread_id?: number, buttons?: Button[][]): Promise<TgResponse<Message>> {
         const body = {
             chat_id: target,
             text,
             parse_mode: html? 'HTML' : undefined,
+            message_thread_id: thread_id,
             reply_markup: {
                 inline_keyboard: buttons
             }
@@ -133,8 +164,9 @@ interface Update {
 
 interface Message {
     message_id: number;
-    from: User | undefined;
-    text: string | undefined;
+    message_thread_id?: number;
+    from?: User;
+    text?: string;
     chat: Chat;
 }
 
@@ -145,6 +177,7 @@ interface Chat {
 
 interface User {
     id: number;
+    language_code?: string;
 }
 
 export type { TgResponse, Update, Message, Chat, User }

@@ -11,6 +11,8 @@ This is a simple tool that can push any text message to your Telegram.
 
 The official API endpoint is at [https://push.meowbot.page/push](https://push.meowbot.page/push). You can use GET or POST method to interact with the API.
 
+**For developers: It is recommended to include your application info (name, version, etc...) in your request's User Agent. We will collect it (in the future) to improve our API.**
+
 ### Push API v1
 
 This is the simpler way to use the push api.

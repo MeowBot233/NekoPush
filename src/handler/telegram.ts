@@ -54,9 +54,7 @@ async function reset_token(message: Message, env: Env, ctx: ExecutionContext, bo
 }
 
 async function get_thread_id(message: Message, env: Env, ctx: ExecutionContext, bot: TgBot, i18n: lang): Promise<Response> {
-    if(! await isAdmin(message.from!, message.chat, bot)) 
-        return buildReply(bot, message, i18n.no_permission, true, true);
-    return buildReply(bot, message, message.message_thread_id?.toString() || i18n.not_in_thread, true)
+    return buildReply(bot, message, message.message_thread_id?.toString() || i18n.not_in_thread, true, true)
 }
 
 async function privacy(message: Message, env: Env, ctx: ExecutionContext, bot: TgBot, i18n: lang): Promise<Response> {

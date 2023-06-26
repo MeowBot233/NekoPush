@@ -96,7 +96,8 @@ function buildReply(bot:TgBot, message: Message, text: string, html: boolean = f
         parse_mode: html? 'HTML' : undefined
     }
     if(message.chat.type != 'private' && !allowGroup) {
-        body.chat_id = message.from?.id!
+        body.chat_id = message.from?.id!;
+        body.reply_to_message_id = 0;
     }
     return bot.buildResponse(body);
 }

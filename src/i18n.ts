@@ -5,6 +5,7 @@ interface lang {
     get_thread_id_description: string;
     privacy_policy: string;
     not_in_thread: string;
+    no_permission: string;
 }
 
 const en: lang = {
@@ -14,6 +15,7 @@ const en: lang = {
     get_thread_id_description: 'Get thread id',
     privacy_policy: 'TODO',
     not_in_thread: 'Not in thread',
+    no_permission: 'No permission!',
 }
 
 const zh: lang = {
@@ -23,6 +25,7 @@ const zh: lang = {
     get_thread_id_description: '获取分组id',
     privacy_policy: '咕咕咕',
     not_in_thread: '不在分组中',
+    no_permission: '没有权限!',
 }
 
 const i18n = new Map([

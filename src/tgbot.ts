@@ -148,6 +148,14 @@ export default class {
         const method = 'send' + type[0] + type.slice(1);
         return await this.sendRequest<Message>(body, method);
     }
+    
+    public async getChatMember(chat_id: number, user_id: number): Promise<TgResponse<ChatMember>> {
+        const body = {
+            chat_id,
+            user_id
+        }
+        return await this.sendRequest<ChatMember>(body, 'getChatMember');
+    }
 
 }
 
@@ -173,11 +181,16 @@ interface Message {
 interface Chat {
     id: number;
     type: string;
+    title?: string;
 }
 
 interface User {
     id: number;
     language_code?: string;
+}
+
+interface ChatMember {
+    status: string;
 }
 
 export type { TgResponse, Update, Message, Chat, User }

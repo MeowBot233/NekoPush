@@ -54,7 +54,13 @@ async function reset_token(message: Message, env: Env, ctx: ExecutionContext, bo
 }
 
 async function get_thread_id(message: Message, env: Env, ctx: ExecutionContext, bot: TgBot, i18n: lang): Promise<Response> {
-    return buildReply(bot, message, message.message_thread_id?.toString() || i18n.not_in_thread, true, true)
+    let text: string;
+    const thread_id = message.message_thread_id;
+    if(thread_id) 
+        text = ['<code>', thread_id, '</code>'].join('');
+    else
+        text = i18n.not_in_thread;
+    return buildReply(bot, message, text, true, true)
 }
 
 async function privacy(message: Message, env: Env, ctx: ExecutionContext, bot: TgBot, i18n: lang): Promise<Response> {

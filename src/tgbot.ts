@@ -83,7 +83,7 @@ export default class {
                 },
                 {
                     command: 'reset_token',
-                    description: lang.refresh_token_description
+                    description: lang.reset_token_description
                 },
                 {
                     command: 'privacy',
@@ -107,7 +107,7 @@ export default class {
                 },
                 {
                     command: 'reset_token',
-                    description: lang.refresh_token_description
+                    description: lang.reset_token_description
                 },
                 {
                     command: 'get_thread_id',
@@ -168,6 +168,7 @@ interface TgResponse<T> {
 interface Update {
     update_id: number;
     message?: Message;
+    callback_query?: CallbackQuery;
 }
 
 interface Message {
@@ -193,4 +194,17 @@ interface ChatMember {
     status: string;
 }
 
-export type { TgResponse, Update, Message, Chat, User }
+interface InlineKeyboardButton {
+    text: string;
+    url?: string;
+    callback_data?: string;
+}
+
+interface CallbackQuery {
+    id: string,
+    from: User,
+    message?: Message
+    data?: string
+}
+
+export type { TgResponse, Update, Message, Chat, User, InlineKeyboardButton, CallbackQuery }

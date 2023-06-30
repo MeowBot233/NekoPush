@@ -52,8 +52,9 @@ const zh_traditional: lang = {
 
 const i18n = new Map([
     ['en', en],
-    ['zh', zh_traditional],
+    ['zh', zh_simple],
     ['zh-hans', zh_simple],
+    ['zh-hant', zh_traditional],
 ])
 
 export default i18n;

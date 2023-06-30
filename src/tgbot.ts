@@ -63,6 +63,7 @@ export default class {
     public async setCommands(): Promise<string> {
         const strs: string[] = [];
         for(const [key, lang] of i18n) {
+            if(key.length != 2) continue;
             strs.push('Setting commands for language ' + key);
             strs.push(' ');
             const privateCommandsRes = await this.setPrivateCommands(lang, key);

@@ -24,7 +24,7 @@ const en: lang = {
     reset_token_no_button: 'Cancel',
 }
 
-const zh: lang = {
+const zh_simple: lang = {
     privacy_description: '隐私政策',
     get_token_description: '获取token',
     reset_token_description: '刷新token',
@@ -37,9 +37,23 @@ const zh: lang = {
     reset_token_no_button: '取消',
 }
 
+const zh_traditional: lang = {
+    privacy_description: '隱私權政策',
+    get_token_description: '取得token',
+    reset_token_description: '刷新token',
+    get_thread_id_description: '取得分組id',
+    privacy_policy: '咕咕咕',
+    not_in_thread: '不在分組中',
+    no_permission: '沒有權限!',
+    reset_token_confirm: '<b>確定要重置token?</b>',
+    reset_token_yes_button: '重置token',
+    reset_token_no_button: '取消',
+}
+
 const i18n = new Map([
     ['en', en],
-    ['zh', zh],
+    ['zh', zh_traditional],
+    ['zh-hans', zh_simple],
 ])
 
 export default i18n;

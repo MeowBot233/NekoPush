@@ -98,7 +98,7 @@ async function getThreadIdHandler(message: Message, env: Env, ctx: ExecutionCont
 
 async function privacyHandler(message: Message, env: Env, ctx: ExecutionContext, bot: TgBot, lang: lang): Promise<Response> {
     if(message.chat.type != 'private') return new Response(null, { status: 204 })
-    return buildReply(bot, message, message.from?.language_code || 'No language code')
+    return buildReply(bot, message, lang.privacy_policy, true, true)
 }
 
 async function commandNotFound(message: Message, env: Env, ctx: ExecutionContext, bot: TgBot, lang: lang): Promise<Response> {

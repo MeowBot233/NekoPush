@@ -36,8 +36,7 @@ export interface Env {
 type handler = (request: Request, env: Env, ctx: ExecutionContext, bot: TgBot) => Promise<Response>;
 
 async function defaultHandler(request: Request, env: Env, ctx: ExecutionContext, bot: TgBot): Promise<Response> {
-    
-    return new Response("Push agent running.");
+    return new Response(null, { status: 302, headers: new Headers({ Location: 'https://github.com/MeowBot233/NekoPush/' }) });
 }
 export default {
     async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {

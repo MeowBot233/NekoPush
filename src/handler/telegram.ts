@@ -23,7 +23,7 @@ export default async function (request: Request, env: Env, ctx: ExecutionContext
 }
 
 const commandHandlerMap = new Map<string, commandHandler>([
-    // ['/chat_id', chat_id],
+    ['/start', startHandler],
     ['/get_token', getTokenHandler],
     ['/reset_token', resetTokenHandler],
     ['/get_thread_id', getThreadIdHandler],
@@ -53,14 +53,17 @@ async function defaultCallbackHandler(callback: CallbackQuery, env: Env, ctx: Ex
     return new Response(null, { status: 204 })
 }
 
-
-
 async function isAdmin(user: User, chat: Chat, bot: TgBot): Promise<boolean> {
     if(chat.type == 'private') return true;
     const res = await bot.getChatMember(chat.id, user.id);
     if(!res.ok) return false;
     if(res.result?.status == 'creator' || res.result?.status == 'administrator') return true;
     return false;
+}
+
+async function startHandler(message: Message, env: Env, ctx: ExecutionContext, bot: TgBot, lang: lang): Promise<Response> {
+    if(message.chat.type != 'private') return new Response(null, { status: 204 })
+    return buildReply(bot, message, lang.start_message, true, true)
 }
 
 async function getTokenHandler(message: Message, env: Env, ctx: ExecutionContext, bot: TgBot, lang: lang): Promise<Response> {

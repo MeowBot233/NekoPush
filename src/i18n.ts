@@ -1,4 +1,5 @@
 interface lang {
+    start_message: string;
     privacy_description: string;
     get_token_description: string;
     reset_token_description: string;
@@ -12,6 +13,9 @@ interface lang {
 }
 
 const en: lang = {
+    start_message: 'Welcome to NekoPush 😸!\n\
+Before you start, you should read our privacy policy by using /privacy command.\n\
+If you do not agree with it, please do not use NekoPush 😾.',
     privacy_description: 'Privacy Policy',
     get_token_description: 'Get token',
     reset_token_description: 'Refresh token',
@@ -41,6 +45,9 @@ If you do not agree with the above privacy policy, please do not use NekoPush �
 }
 
 const zh_simple: lang = {
+    start_message: '欢迎使用NekoPush😸!\n\
+在开始之前,您应该使用命令 /privacy 阅读NekoPush的隐私政策。\n\
+如果您不同意,请不要使用NekoPush😾。',
     privacy_description: '隐私政策',
     get_token_description: '获取token',
     reset_token_description: '刷新token',
@@ -65,6 +72,9 @@ const zh_simple: lang = {
 }
 
 const zh_traditional: lang = {
+    start_message: '歡迎使用NekoPush😸!\n\
+    在開始之前，您應該使用命令 /privacy 閱讀NekoPush的隱私政策。\n\
+    如果您不同意，請不要使用NekoPush😾。',    
     privacy_description: '隱私權政策',
     get_token_description: '取得token',
     reset_token_description: '刷新token',
